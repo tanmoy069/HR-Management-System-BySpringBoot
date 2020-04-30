@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{fragments/main_layout}"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1"
+	charset="ISO-8859-1">
+<title>HRM Log In</title>
+<style>
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Full-width input fields */
+input[type=text], input[type=password] {
+	width: 100%;
+	padding: 12px 20px;
+	margin: 8px 0;
+	display: inline-block;
+	border: 1px solid #ccc;
+	box-sizing: border-box;
+}
+
+/* Set a style for all buttons */
+button {
+	background-color: #4CAF50;
+	color: white;
+	padding: 14px 20px;
+	margin: 8px 0;
+	border: none;
+	cursor: pointer;
+	width: 100%;
+}
+
+h1 {
+	color: #4CAF50;
+}
+
+button:hover {
+	opacity: 0.8;
+}
+
+.container {
+	padding: 16px;
+}
+.form-group {
+	padding: 10px;
+}
+
+p {
+	padding: 16px;
+}
+
+span.psw {
+	float: right;
+	padding-top: 16px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+	background-color: #fefefe;
+	margin: 5% auto 15% auto;
+	/* 5% from the top, 15% from the bottom and centered */
+	border: 2px solid #888;
+	width: 30%; /* Could be more or less, depending on screen size */
+}
+
+.animate {
+	-webkit-animation: animatezoom 0.6s;
+	animation: animatezoom 0.6s
+}
+
+.alert {
+	padding: 10px;
+	background-color: #ff9800;
+	color: white;
+}
+
+.closebtn {
+	margin-left: 15px;
+	color: white;
+	font-weight: bold;
+	float: right;
+	font-size: 22px;
+	line-height: 20px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.closebtn:hover {
+	color: black;
+}
+</style>
+</head>
+<body>
+	<h1>
+		<center>HRM Login</center>
+	</h1>
+	<form class="modal-content animate" th:action="@{/login}" method="post">
+		<div class="form-group">
+			<label for="username" class="form-control-label">Username</label>
+			<input type="text" class="form-control" id="username" name="username"/>
+		</div>
+		<div class="form-group">
+			<label for="password" class="form-control-label">Password</label> 
+			<input type="password" class="form-control" id="password" name="password"/>
+		</div>
+		<div style="padding-left: 10px">
+			<input type="submit" value="Submit" class="btn btn-primary" style="padding: 10px"/>
+		</div>
+
+		<div class="container" style="background-color: #f1f1f1">
+			<span class="psw">Forgot <a href="#">password?</a></span>
+		</div>
+	</form>
+
+</body>
+</html>

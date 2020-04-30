@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<title>HRM Payroll</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet"
+	href="https://www.w3schools.com/lib/w3-theme-black.css">
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+html, body, h1, h2, h3, h4, h5, h6 {
+	font-family: "Roboto", sans-serif;
+}
+
+.w3-sidebar {
+	z-index: 3;
+	width: 250px;
+	top: 43px;
+	bottom: 0;
+	height: inherit;
+}
+
+#myFooter {
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+	opacity: 60%;
+}
+
+#submitbtn {
+	margin: 15px;
+}
+</style>
+<body>
+
+	<!-- Navbar -->
+	<div class="w3-top">
+		<div class="w3-bar w3-theme w3-top w3-left-align w3-large">
+			<a
+				class="w3-bar-item w3-button w3-right w3-hide-large w3-hover-white w3-large w3-theme-l1"
+				href="javascript:void(0)" onclick="w3_open()"><i
+				class="fa fa-bars"></i></a> <a href="/home"
+				class="w3-bar-item w3-button w3-theme-l1">HRM</a> <a
+				href="/erp/about"
+				class="w3-bar-item w3-button w3-hide-small w3-hover-white">About
+				Company</a>
+		</div>
+	</div>
+
+	<!-- Sidebar -->
+	<nav
+		class="w3-sidebar w3-bar-block w3-collapse w3-large w3-theme-l5 w3-animate-left"
+		id="mySidebar">
+		<a href="javascript:void(0)" onclick="w3_close()"
+			class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large"
+			title="Close Menu"> <i class="fa fa-remove"></i>
+		</a>
+		<h4 class="w3-bar-item">
+			<b>Menu</b>
+		</h4>
+		<a class="w3-bar-item w3-button w3-hover-black" href="/home">Home</a>
+		<a class="w3-bar-item w3-button w3-hover-black" href="/hrm/empdetails">Employee
+			Details</a> <a class="w3-bar-item w3-button w3-hover-black"
+			href="/hrm/registration">Employee Registration</a> <a
+			class="w3-bar-item w3-button w3-hover-black" href="/hrm/resume">Resume
+			Tracking</a> <a class="w3-bar-item w3-button w3-hover-black"
+			href="/hrm/performance">Performance</a> <a
+			class="w3-bar-item w3-button w3-hover-black" href="/hrm/payroll">Payroll</a>
+		<a class="w3-bar-item w3-button w3-hover-black" href="/login"
+			sec:authorize="!isAuthenticated()">Login</a>
+		<form id="submitbtn" class="form-inline my-2 my-lg-0"
+			th:action="@{/logout}" method="post"
+			sec:authorize="isAuthenticated()">
+			<button class="btn btn-secondary my-2 my-sm-0" type="submit">Logout</button>
+		</form>
+	</nav>
+
+	<!-- Main content: shift it to the right by 250 pixels when the sidebar is visible -->
+	<div class="w3-main" style="margin-left: 250px">
+
+		<!-- Payroll Section -->
+		<br>
+		<br>
+		<br>
+		<button onclick="addSalary()">Add Salary</button>
+		<button onclick="getPayList()">Get Payable Salary List</button>
+		<button onclick="getPayroll()">Get Payroll Details</button>
+
+		<div class="w3-modal-content w3-animate-zoom" style="padding: 32px"
+			id="empPayableSalary">
+			<div class="w3-container w3-white w3-center">
+				<h2 class="w3-wide">Payable Salary</h2>
+				<table class="w3-table">
+					<tr>
+						<th>Employee ID</th>
+						<th>Name of Month</th>
+						<th>Payable Salary</th>
+					</tr>
+					<tr th:each="pay : ${empPayableSalary}">
+						<td><span th:text="${pay.getEmpId()}"></span></td>
+						<td><span th:text="${pay.getPayMonth()}"></span></td>
+						<td><span th:text="${pay.getPaySalary()}"></span></td>
+					</tr>
+				</table>
+				<form th:action="@{/hrm/payroll}" th:object="${addSalaryForm}" method="post" style="padding: 32px">
+					<button th:if="${viewAddPayrollButton}" type="submit" class="w3-button w3-padding-large w3-red w3-margin-bottom w3-center">Add Payroll</button>
+					<div th:if="${validInputForPay}" class="alert warning">
+						<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+						<strong>Successfully!</strong> Payable salaries added to db!
+					</div>	
+					<div th:if="${invalidInputForPay}" class="alert warning">
+						<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+						<strong>Warning!</strong> Failed to add attendance!
+					</div>			
+				</form>				
+			</div>
+		</div>
+
+		<div class="w3-modal-content w3-animate-zoom" style="padding: 32px"
+			id="empPayroll">
+			<div class="w3-container w3-white w3-center">
+				<h2 class="w3-wide">Payroll</h2>
+				<table class="w3-table">
+					<tr>
+						<th>Employee ID</th>
+						<th>Name of Month</th>
+						<th>Given Salary</th>
+					</tr>
+					<tr th:each="emp : ${empPayroll}">
+						<td><span th:text="${emp.getEmpId()}"></span></td>
+						<td><span th:text="${emp.getPayMonth()}"></span></td>
+						<td><span th:text="${emp.getPaySalary()}"></span></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<form th:action="@{/hrm/payroll}" th:object="${addSalaryForm}" method="post" style="padding: 32px">
+			<div id="addSalaryStatus" class="">
+				<p>
+					Employee Id: <input id="empId" name="empId" class="" type="number"
+						required>
+				<p>
+					Basic Salary: <input id="basicSalary" name="basicSalary" class=""
+						type="number" required>
+
+					<button type="submit"
+						class="w3-button w3-padding-large w3-red w3-margin-bottom w3-center">Add
+						Salary</button>
+				<div th:if="${validInput}" class="alert warning">
+					<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+					<strong>Successfully!</strong> Added Salary!
+				</div>
+				<div th:if="${invalidInput}" class="alert warning">
+					<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+					<strong>Warning!</strong> Failed to add Salary!
+				</div>
+			</div>
+		</form>
+
+		<footer id="myFooter">
+			<div class="w3-container w3-theme-l1">
+				<p>
+					Powered by <a href="https://github.com/tanmoy069" target="_blank">git.tanmoy</a>
+				</p>
+			</div>
+		</footer>
+
+		<!-- END MAIN -->
+	</div>
+
+	<script>
+
+var addSalaryBar = document.getElementById("addSalaryStatus");
+addSalaryBar.style.display = 'none';
+
+var payableBar = document.getElementById("empPayableSalary");
+payableBar.style.display = 'none';
+
+var payrollBar = document.getElementById("empPayroll");
+payrollBar.style.display = 'none';
+
+
+
+function addSalary() {
+  if (addSalaryBar.style.display === 'block') {
+    addSalaryBar.style.display = 'none';
+    payableBar.style.display = 'none';
+    payrollBar.style.display = 'none';
+    
+  } else {
+    addSalaryBar.style.display = 'block';
+    payableBar.style.display = 'none';
+    payrollBar.style.display = 'none';
+  }
+}
+
+function getPayList() {
+  if (payableBar.style.display === 'block') {
+    addSalaryBar.style.display = 'none';
+    payableBar.style.display = 'none';
+    payrollBar.style.display = 'none';
+    
+  } else {
+    addSalaryBar.style.display = 'none';
+    payableBar.style.display = 'block';
+    payrollBar.style.display = 'none';
+  }
+}
+
+function getPayroll() {
+  if (payrollBar.style.display === 'block') {
+    addSalaryBar.style.display = 'none';
+    payableBar.style.display = 'none';
+    payrollBar.style.display = 'none';
+    
+  } else {
+    payrollBar.style.display = 'block';
+    addSalaryBar.style.display = 'none';
+    payableBar.style.display = 'none';
+  }
+}
+
+</script>
+
+</body>
+</html>

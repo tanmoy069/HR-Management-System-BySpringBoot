@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<title>HRM Employee Details</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
+.w3-sidebar {
+  z-index: 3;
+  width: 250px;
+  top: 43px;
+  bottom: 0;
+  height: inherit;
+}
+#myFooter {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    opacity: 60%;
+}
+#submitbtn {
+  margin: 15px;
+}
+</style>
+<body>
+
+<!-- Navbar -->
+<div class="w3-top">
+  <div class="w3-bar w3-theme w3-top w3-left-align w3-large">
+    <a class="w3-bar-item w3-button w3-right w3-hide-large w3-hover-white w3-large w3-theme-l1" href="javascript:void(0)" onclick="w3_open()"><i class="fa fa-bars"></i></a>
+    <a href="/home" class="w3-bar-item w3-button w3-theme-l1">HRM</a>
+    <a href="/erp/about" class="w3-bar-item w3-button w3-hide-small w3-hover-white">About Company</a>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<nav class="w3-sidebar w3-bar-block w3-collapse w3-large w3-theme-l5 w3-animate-left" id="mySidebar">
+  <a href="javascript:void(0)" onclick="w3_close()" class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large" title="Close Menu">
+    <i class="fa fa-remove"></i>
+  </a>
+  <h4 class="w3-bar-item"><b>Menu</b></h4>
+  <a class="w3-bar-item w3-button w3-hover-black" href="/home">Home</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="/hrm/empdetails">Employee Details</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="/hrm/registration">Employee Registration</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="/hrm/resume">Resume Tracking</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="/hrm/performance">Performance</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="/hrm/payroll">Payroll</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="/login" sec:authorize="!isAuthenticated()">Login</a>
+  <form id="submitbtn" class="form-inline my-2 my-lg-0" th:action="@{/logout}" method="post"  sec:authorize="isAuthenticated()">
+      <button class="btn btn-secondary my-2 my-sm-0" type="submit">Logout</button>
+  </form>
+</nav>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- Main content: shift it to the right by 250 pixels when the sidebar is visible -->
+<div class="w3-main" style="margin-left:250px">
+
+  <!-- Employee Details Section  -->
+  <div class="w3-modal-content w3-animate-zoom" style="padding:32px" id="empDetails">
+    <div class="w3-container w3-white w3-center">
+      <h2 class="w3-wide">Employee Details</h2>
+      <table class="w3-table">
+        <tr>
+          <th>Employee ID</th>
+          <th>Employee Name</th>
+          <th>Employee Email</th>
+          <th>Employee Phone</th>
+          <th>Designation</th>
+        </tr>       
+      <tr th:each="emp : ${empObj}">
+            <td><span th:text="${emp.getEmpId()}"></span></td>
+            <td><span th:text="${emp.getFullName()}"></span></td>
+            <td><span th:text="${emp.getEmail()}"></span></td>
+            <td><span th:text="${emp.getPhone()}"></span></td>
+            <td><span th:text="${emp.getDesignation()}"></span></td>
+        </tr>
+    </table>
+    </div>    
+  </div>
+
+  <footer id="myFooter">
+    <div class="w3-container w3-theme-l1">
+      <p>Powered by <a href="https://github.com/tanmoy069" target="_blank">git.tanmoy</a></p>
+    </div>
+  </footer>
+
+<!-- END MAIN -->
+</div>
+
+<script>
+// Get the Sidebar
+var mySidebar = document.getElementById("mySidebar");
+
+// Get the DIV with overlay effect
+var overlayBg = document.getElementById("myOverlay");
+
+// Toggle between showing and hiding the sidebar, and add overlay effect
+function w3_open() {
+  if (mySidebar.style.display === 'block') {
+    mySidebar.style.display = 'none';
+    overlayBg.style.display = "none";
+  } else {
+    mySidebar.style.display = 'block';
+    overlayBg.style.display = "block";
+  }
+}
+
+// Close the sidebar with the close button
+function w3_close() {
+  mySidebar.style.display = "none";
+  overlayBg.style.display = "none";
+}
+</script>
+
+</body>
+</html>
